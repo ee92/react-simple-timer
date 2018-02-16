@@ -15,29 +15,46 @@ class Timer extends React.Component {
     this.resetTimer = this.resetTimer.bind(this)
   }
 
-  resetTimer() {
-    this.setState({time: 0, isOn: false})
-  }
-
   startTimer() {
     if (this.state.isOn) {return}
-    this.setState({isOn: true, time: 0, start: Date.now()})
+    this.setState({isOn: true, time: this.state.time, start: Date.now() - this.state.time})
     this.timer = setInterval(() => this.setState({time: Date.now() - this.state.start}), 1);
   }
 
   stopTimer() {
-    this.setState({isOn: true})
+    this.setState({isOn: false})
     clearInterval(this.timer)
-    this.timer = null
+    console.log(this.state.time)
+  }
+
+  resetTimer() {
+    this.setState({time: 0, isOn: false})
   }
 
   render() {
+    let start = (this.state.time == 0) ?
+      (start = <button onClick={this.startTimer}>start</button>) :
+      (start = null)
+
+    let stop = (this.state.time == 0 || !this.state.isOn) ?
+      (stop = null) :
+      (stop = <button onClick={this.stopTimer}>stop</button>)
+
+    let resume = (this.state.time == 0 || this.state.isOn) ?
+      (resume = null) :
+      (resume = <button onClick={this.startTimer}>resume</button>)
+
+    let reset = (this.state.time == 0 || this.state.isOn) ?
+      (reset = null) :
+      (reset = <button onClick={this.resetTimer}>reset</button>)
+
     return(
       <div>
         <h3>timer: {ms(this.state.time)}</h3>
-        <button onClick={this.startTimer}>start</button>
-        <button onClick={this.stopTimer}>stop</button>
-        <button onClick={this.resetTimer}>reset</button>
+        {start}
+        {resume}
+        {stop}
+        {reset}
       </div>
     )
   }

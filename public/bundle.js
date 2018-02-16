@@ -18264,7 +18264,7 @@ module.exports = camelize;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Timer = __webpack_require__(30);
+var _Timer = __webpack_require__(28);
 
 var _Timer2 = _interopRequireDefault(_Timer);
 
@@ -18309,9 +18309,7 @@ var Main = function (_React$Component) {
 module.exports = Main;
 
 /***/ }),
-/* 28 */,
-/* 29 */,
-/* 30 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18326,7 +18324,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var React = __webpack_require__(2);
-var ms = __webpack_require__(31);
+var ms = __webpack_require__(29);
 
 var Timer = function (_React$Component) {
   _inherits(Timer, _React$Component);
@@ -18349,11 +18347,6 @@ var Timer = function (_React$Component) {
   }
 
   _createClass(Timer, [{
-    key: 'resetTimer',
-    value: function resetTimer() {
-      this.setState({ time: 0, isOn: false });
-    }
-  }, {
     key: 'startTimer',
     value: function startTimer() {
       var _this2 = this;
@@ -18361,7 +18354,7 @@ var Timer = function (_React$Component) {
       if (this.state.isOn) {
         return;
       }
-      this.setState({ isOn: true, time: 0, start: Date.now() });
+      this.setState({ isOn: true, time: this.state.time, start: Date.now() - this.state.time });
       this.timer = setInterval(function () {
         return _this2.setState({ time: Date.now() - _this2.state.start });
       }, 1);
@@ -18369,13 +18362,42 @@ var Timer = function (_React$Component) {
   }, {
     key: 'stopTimer',
     value: function stopTimer() {
-      this.setState({ isOn: true });
+      this.setState({ isOn: false });
       clearInterval(this.timer);
-      this.timer = null;
+      console.log(this.state.time);
+    }
+  }, {
+    key: 'resetTimer',
+    value: function resetTimer() {
+      this.setState({ time: 0, isOn: false });
     }
   }, {
     key: 'render',
     value: function render() {
+      var start = this.state.time == 0 ? start = React.createElement(
+        'button',
+        { onClick: this.startTimer },
+        'start'
+      ) : start = null;
+
+      var stop = this.state.time == 0 || !this.state.isOn ? stop = null : stop = React.createElement(
+        'button',
+        { onClick: this.stopTimer },
+        'stop'
+      );
+
+      var resume = this.state.time == 0 || this.state.isOn ? resume = null : resume = React.createElement(
+        'button',
+        { onClick: this.startTimer },
+        'resume'
+      );
+
+      var reset = this.state.time == 0 || this.state.isOn ? reset = null : reset = React.createElement(
+        'button',
+        { onClick: this.resetTimer },
+        'reset'
+      );
+
       return React.createElement(
         'div',
         null,
@@ -18385,21 +18407,10 @@ var Timer = function (_React$Component) {
           'timer: ',
           ms(this.state.time)
         ),
-        React.createElement(
-          'button',
-          { onClick: this.startTimer },
-          'start'
-        ),
-        React.createElement(
-          'button',
-          { onClick: this.stopTimer },
-          'stop'
-        ),
-        React.createElement(
-          'button',
-          { onClick: this.resetTimer },
-          'reset'
-        )
+        start,
+        resume,
+        stop,
+        reset
       );
     }
   }]);
@@ -18410,13 +18421,13 @@ var Timer = function (_React$Component) {
 module.exports = Timer;
 
 /***/ }),
-/* 31 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-const parseMs = __webpack_require__(32);
-const plur = __webpack_require__(33);
+const parseMs = __webpack_require__(30);
+const plur = __webpack_require__(31);
 
 module.exports = (ms, opts) => {
 	if (!Number.isFinite(ms)) {
@@ -18465,7 +18476,7 @@ module.exports = (ms, opts) => {
 
 
 /***/ }),
-/* 32 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18488,12 +18499,12 @@ module.exports = function (ms) {
 
 
 /***/ }),
-/* 33 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var irregularPlurals = __webpack_require__(34);
+var irregularPlurals = __webpack_require__(32);
 
 module.exports = function (str, plural, count) {
 	if (typeof plural === 'number') {
@@ -18515,7 +18526,7 @@ module.exports = function (str, plural, count) {
 
 
 /***/ }),
-/* 34 */
+/* 32 */
 /***/ (function(module, exports) {
 
 module.exports = {"addendum":"addenda","aircraft":"aircraft","alga":"algae","alumna":"alumnae","alumnus":"alumni","amoeba":"amoebae","analysis":"analyses","antenna":"antennae","antithesis":"antitheses","apex":"apices","appendix":"appendices","automaton":"automata","axis":"axes","bacillus":"bacilli","bacterium":"bacteria","barracks":"barracks","basis":"bases","beau":"beaux","bison":"bison","buffalo":"buffalo","bureau":"bureaus","cactus":"cacti","calf":"calves","carp":"carp","census":"censuses","chassis":"chassis","cherub":"cherubim","child":"children","château":"châteaus","cod":"cod","codex":"codices","concerto":"concerti","corpus":"corpora","crisis":"crises","criterion":"criteria","curriculum":"curricula","datum":"data","deer":"deer","diagnosis":"diagnoses","die":"dice","dwarf":"dwarfs","echo":"echoes","elf":"elves","elk":"elk","ellipsis":"ellipses","embargo":"embargoes","emphasis":"emphases","erratum":"errata","faux pas":"faux pas","fez":"fezes","firmware":"firmware","fish":"fish","focus":"foci","foot":"feet","formula":"formulae","fungus":"fungi","gallows":"gallows","genus":"genera","goose":"geese","graffito":"graffiti","grouse":"grouse","half":"halves","hero":"heroes","hoof":"hooves","hovercraft":"hovercraft","hypothesis":"hypotheses","index":"indices","kakapo":"kakapo","knife":"knives","larva":"larvae","leaf":"leaves","libretto":"libretti","life":"lives","loaf":"loaves","locus":"loci","louse":"lice","man":"men","matrix":"matrices","means":"means","medium":"media","memorandum":"memoranda","millennium":"millennia","minutia":"minutiae","moose":"moose","mouse":"mice","nebula":"nebulae","nemesis":"nemeses","neurosis":"neuroses","news":"news","nucleus":"nuclei","oasis":"oases","offspring":"offspring","opus":"opera","ovum":"ova","ox":"oxen","paralysis":"paralyses","parenthesis":"parentheses","person":"people","phenomenon":"phenomena","phylum":"phyla","pike":"pike","polyhedron":"polyhedra","potato":"potatoes","prognosis":"prognoses","quiz":"quizzes","radius":"radii","referendum":"referenda","salmon":"salmon","scarf":"scarves","self":"selves","series":"series","sheep":"sheep","shelf":"shelves","shrimp":"shrimp","spacecraft":"spacecraft","species":"species","spectrum":"spectra","squid":"squid","stimulus":"stimuli","stratum":"strata","swine":"swine","syllabus":"syllabi","symposium":"symposia","synopsis":"synopses","synthesis":"syntheses","tableau":"tableaus","that":"those","thesis":"theses","thief":"thieves","this":"these","tomato":"tomatoes","tooth":"teeth","trout":"trout","tuna":"tuna","vertebra":"vertebrae","vertex":"vertices","veto":"vetoes","vita":"vitae","vortex":"vortices","watercraft":"watercraft","wharf":"wharves","wife":"wives","wolf":"wolves","woman":"women"}
