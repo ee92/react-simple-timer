@@ -4,6 +4,6 @@ const ReactDOM = require('react-dom')
 var Main = require('./components/Main')
 
 ReactDOM.render(
-  <Main name="main" />,
+  <Main name="simple timer" />,
   document.getElementById('id')
 );

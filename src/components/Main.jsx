@@ -1,11 +1,12 @@
 const React = require('react')
+import Timer from './Timer'
 
 class Main extends React.Component {
   render() {
     return (
       <div>
-        <h2>this is the {this.props.name} component</h2>
-        <h3>the time is {Date.now()}</h3>
+        <h2>{this.props.name}</h2>
+        <Timer/>
       </div>
     );
   }

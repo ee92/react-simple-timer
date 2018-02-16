@@ -945,7 +945,7 @@ var ReactDOM = __webpack_require__(18);
 
 var Main = __webpack_require__(27);
 
-ReactDOM.render(React.createElement(Main, { name: 'main' }), document.getElementById('id'));
+ReactDOM.render(React.createElement(Main, { name: 'simple timer' }), document.getElementById('id'));
 
 /***/ }),
 /* 15 */
@@ -18264,6 +18264,12 @@ module.exports = camelize;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Timer = __webpack_require__(30);
+
+var _Timer2 = _interopRequireDefault(_Timer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -18290,16 +18296,9 @@ var Main = function (_React$Component) {
         React.createElement(
           'h2',
           null,
-          'this is the ',
-          this.props.name,
-          ' component'
+          this.props.name
         ),
-        React.createElement(
-          'h3',
-          null,
-          'the time is ',
-          Date.now()
-        )
+        React.createElement(_Timer2.default, null)
       );
     }
   }]);
@@ -18308,6 +18307,218 @@ var Main = function (_React$Component) {
 }(React.Component);
 
 module.exports = Main;
+
+/***/ }),
+/* 28 */,
+/* 29 */,
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var React = __webpack_require__(2);
+var ms = __webpack_require__(31);
+
+var Timer = function (_React$Component) {
+  _inherits(Timer, _React$Component);
+
+  function Timer(props) {
+    _classCallCheck(this, Timer);
+
+    var _this = _possibleConstructorReturn(this, (Timer.__proto__ || Object.getPrototypeOf(Timer)).call(this, props));
+
+    _this.state = {
+      time: 0,
+      isOn: false,
+      start: 0
+    };
+
+    _this.startTimer = _this.startTimer.bind(_this);
+    _this.stopTimer = _this.stopTimer.bind(_this);
+    _this.resetTimer = _this.resetTimer.bind(_this);
+    return _this;
+  }
+
+  _createClass(Timer, [{
+    key: 'resetTimer',
+    value: function resetTimer() {
+      this.setState({ time: 0, isOn: false });
+    }
+  }, {
+    key: 'startTimer',
+    value: function startTimer() {
+      var _this2 = this;
+
+      if (this.state.isOn) {
+        return;
+      }
+      this.setState({ isOn: true, time: 0, start: Date.now() });
+      this.timer = setInterval(function () {
+        return _this2.setState({ time: Date.now() - _this2.state.start });
+      }, 1);
+    }
+  }, {
+    key: 'stopTimer',
+    value: function stopTimer() {
+      this.setState({ isOn: true });
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'h3',
+          null,
+          'timer: ',
+          ms(this.state.time)
+        ),
+        React.createElement(
+          'button',
+          { onClick: this.startTimer },
+          'start'
+        ),
+        React.createElement(
+          'button',
+          { onClick: this.stopTimer },
+          'stop'
+        ),
+        React.createElement(
+          'button',
+          { onClick: this.resetTimer },
+          'reset'
+        )
+      );
+    }
+  }]);
+
+  return Timer;
+}(React.Component);
+
+module.exports = Timer;
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const parseMs = __webpack_require__(32);
+const plur = __webpack_require__(33);
+
+module.exports = (ms, opts) => {
+	if (!Number.isFinite(ms)) {
+		throw new TypeError('Expected a finite number');
+	}
+
+	opts = opts || {};
+
+	if (ms < 1000) {
+		const msDecimalDigits = typeof opts.msDecimalDigits === 'number' ? opts.msDecimalDigits : 0;
+		return (msDecimalDigits ? ms.toFixed(msDecimalDigits) : Math.ceil(ms)) + (opts.verbose ? ' ' + plur('millisecond', Math.ceil(ms)) : 'ms');
+	}
+
+	const ret = [];
+
+	const add = (val, long, short, valStr) => {
+		if (val === 0) {
+			return;
+		}
+
+		const postfix = opts.verbose ? ' ' + plur(long, val) : short;
+
+		ret.push((valStr || val) + postfix);
+	};
+
+	const parsed = parseMs(ms);
+
+	add(Math.trunc(parsed.days / 365), 'year', 'y');
+	add(parsed.days % 365, 'day', 'd');
+	add(parsed.hours, 'hour', 'h');
+	add(parsed.minutes, 'minute', 'm');
+
+	if (opts.compact) {
+		add(parsed.seconds, 'second', 's');
+		return '~' + ret[0];
+	}
+
+	const sec = ms / 1000 % 60;
+	const secDecimalDigits = typeof opts.secDecimalDigits === 'number' ? opts.secDecimalDigits : 1;
+	const secFixed = sec.toFixed(secDecimalDigits);
+	const secStr = opts.keepDecimalsOnWholeSeconds ? secFixed : secFixed.replace(/\.0+$/, '');
+	add(sec, 'second', 's', secStr);
+
+	return ret.join(' ');
+};
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = function (ms) {
+	if (typeof ms !== 'number') {
+		throw new TypeError('Expected a number');
+	}
+
+	var roundTowardZero = ms > 0 ? Math.floor : Math.ceil;
+
+	return {
+		days: roundTowardZero(ms / 86400000),
+		hours: roundTowardZero(ms / 3600000) % 24,
+		minutes: roundTowardZero(ms / 60000) % 60,
+		seconds: roundTowardZero(ms / 1000) % 60,
+		milliseconds: roundTowardZero(ms) % 1000
+	};
+};
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var irregularPlurals = __webpack_require__(34);
+
+module.exports = function (str, plural, count) {
+	if (typeof plural === 'number') {
+		count = plural;
+	}
+
+	if (str in irregularPlurals) {
+		plural = irregularPlurals[str];
+	} else if (typeof plural !== 'string') {
+		plural = (str.replace(/(?:s|x|z|ch|sh)$/i, '$&e').replace(/([^aeiou])y$/i, '$1ie') + 's')
+			.replace(/i?e?s$/i, function (m) {
+				var isTailLowerCase = str.slice(-1) === str.slice(-1).toLowerCase();
+				return isTailLowerCase ? m.toLowerCase() : m.toUpperCase();
+			});
+	}
+
+	return count === 1 ? str : plural;
+};
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+module.exports = {"addendum":"addenda","aircraft":"aircraft","alga":"algae","alumna":"alumnae","alumnus":"alumni","amoeba":"amoebae","analysis":"analyses","antenna":"antennae","antithesis":"antitheses","apex":"apices","appendix":"appendices","automaton":"automata","axis":"axes","bacillus":"bacilli","bacterium":"bacteria","barracks":"barracks","basis":"bases","beau":"beaux","bison":"bison","buffalo":"buffalo","bureau":"bureaus","cactus":"cacti","calf":"calves","carp":"carp","census":"censuses","chassis":"chassis","cherub":"cherubim","child":"children","château":"châteaus","cod":"cod","codex":"codices","concerto":"concerti","corpus":"corpora","crisis":"crises","criterion":"criteria","curriculum":"curricula","datum":"data","deer":"deer","diagnosis":"diagnoses","die":"dice","dwarf":"dwarfs","echo":"echoes","elf":"elves","elk":"elk","ellipsis":"ellipses","embargo":"embargoes","emphasis":"emphases","erratum":"errata","faux pas":"faux pas","fez":"fezes","firmware":"firmware","fish":"fish","focus":"foci","foot":"feet","formula":"formulae","fungus":"fungi","gallows":"gallows","genus":"genera","goose":"geese","graffito":"graffiti","grouse":"grouse","half":"halves","hero":"heroes","hoof":"hooves","hovercraft":"hovercraft","hypothesis":"hypotheses","index":"indices","kakapo":"kakapo","knife":"knives","larva":"larvae","leaf":"leaves","libretto":"libretti","life":"lives","loaf":"loaves","locus":"loci","louse":"lice","man":"men","matrix":"matrices","means":"means","medium":"media","memorandum":"memoranda","millennium":"millennia","minutia":"minutiae","moose":"moose","mouse":"mice","nebula":"nebulae","nemesis":"nemeses","neurosis":"neuroses","news":"news","nucleus":"nuclei","oasis":"oases","offspring":"offspring","opus":"opera","ovum":"ova","ox":"oxen","paralysis":"paralyses","parenthesis":"parentheses","person":"people","phenomenon":"phenomena","phylum":"phyla","pike":"pike","polyhedron":"polyhedra","potato":"potatoes","prognosis":"prognoses","quiz":"quizzes","radius":"radii","referendum":"referenda","salmon":"salmon","scarf":"scarves","self":"selves","series":"series","sheep":"sheep","shelf":"shelves","shrimp":"shrimp","spacecraft":"spacecraft","species":"species","spectrum":"spectra","squid":"squid","stimulus":"stimuli","stratum":"strata","swine":"swine","syllabus":"syllabi","symposium":"symposia","synopsis":"synopses","synthesis":"syntheses","tableau":"tableaus","that":"those","thesis":"theses","thief":"thieves","this":"these","tomato":"tomatoes","tooth":"teeth","trout":"trout","tuna":"tuna","vertebra":"vertebrae","vertex":"vertices","veto":"vetoes","vita":"vitae","vortex":"vortices","watercraft":"watercraft","wharf":"wharves","wife":"wives","wolf":"wolves","woman":"women"}
 
 /***/ })
 /******/ ]);
